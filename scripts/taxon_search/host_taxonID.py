@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
-
+# To download the taxonID of hosts
 import sys
 import csv
 import requests
 import time
 
 input_file = sys.argv[1]
-output_file = "hosts.csv"
+output_file = "hosts_taxID.csv"
 
 with open(input_file, newline="", encoding="utf-8") as f, \
      open(output_file, "w", newline="", encoding="utf-8") as out:
 
     reader = csv.DictReader(f)
     writer = csv.writer(out)
-    writer.writerow(["ProteinId", "Length", "Host"])
+    writer.writerow(["ProteinId", "Length", "Host", "TaxonID"])
 
     for row in reader:
         acc = row["ProteinId"].strip()
         length_str = row["Length"].strip()
+        host = row["Host"].strip()
 
         url = f"https://rest.uniprot.org/uniprotkb/{acc}.json"
         r = requests.get(url, timeout=30)
@@ -30,22 +31,18 @@ with open(input_file, newline="", encoding="utf-8") as f, \
 
         data = r.json()
 
-        if "organismHosts" not in data:
-            print(f"{acc}: no host in UniProt")
-            continue
+        taxonIDs = []
+        for t in data["organismHosts"]:
+            taxon = t.get("taxonId")
+            if taxon:
+                taxonIDs.append(str(taxon)) ## taxonID is numeric
 
-        hosts = []
-        for h in data["organismHosts"]:
-            name = h.get("scientificName") or h.get("commonName")
-            if name:
-                hosts.append(name)
-
-        if not hosts:
+        if not taxonIDs:
             print(f"{acc}: host field empty")
             continue
 
-        host = ", ".join(hosts)
+        taxonID = ", ".join(taxonIDs)
 
-        writer.writerow([acc, length_str, host])
+        writer.writerow([acc, length_str, host, taxonID])
 
 print(f"Saved to {output_file}")

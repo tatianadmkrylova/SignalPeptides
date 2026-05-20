@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# To make a fasta file which contains only confirmed sequences (check if proteinID in a column "confirmed")
 import sys
 import csv
 

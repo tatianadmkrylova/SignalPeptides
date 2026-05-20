@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# To download host name via proteinId
 
 import sys
 import csv

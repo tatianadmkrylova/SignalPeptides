@@ -102,6 +102,7 @@ hasHost <- merged2[!is.na(merged2$Host), ]
 str(hasHost)
 
 library(tidyverse)
+
 hasHostTable <- hasHost %>%
   select(ProteinId, App, Length, 'SP Status', Host)
 
@@ -140,6 +141,7 @@ colnames(taxonomy) <- c("TaxonId","TaxonId", "type1", "type2", "taxonomy1", "tax
 taxonomy_split <- strsplit(taxonomy$taxonomy1, ",")
 taxonomy_split[[1]]
 library(dplyr)
+
 library(tidyverse)
 tax_long <- taxonomy %>%
   separate_longer_delim(taxonomy1, delim = ",") %>%
@@ -221,3 +223,139 @@ ggplot(merged_taxID_class, aes(x = fct_infreq(domain), y = Length, fill = class)
   theme_classic() +
   coord_flip() +
   scale_y_continuous(n.breaks = 27)
+
+
+
+library(dplyr)
+
+
+
+merged_comparaison <- table_merged_for_analysis %>%
+  left_join(
+    uniprotkb_taxonomy_id_10239_AND_ft_sign_2026_05_11,
+    by = c("ProteinId" = "Entry")
+  ) %>%
+  mutate(
+    status = ifelse(
+      ProteinId %in% uniprotkb_taxonomy_id_10239_AND_ft_sign_2026_05_11$Entry,
+      "in both",
+      "not in Uniprot"
+    )
+  )
+
+table(merged_comparaison$status)
+
+
+merged_comparaison %>%
+  filter(status == "in both") %>%
+  count(`SP Status`)
+
+
+merged_comparaison %>%
+  filter(status == "in both") %>%
+  count(`SP Status`) %>%
+  ggplot(aes(x = `SP Status`, y = n, fill = n)) +
+  geom_col(fill = c("indianred3", "lightskyblue", "lightpink", "lightsalmon"),
+           color = "black", width = 0.5 ) + #color = border of bar
+  labs(
+    x = "SP Status",
+    y = "Number of proteins"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  geom_text(
+    aes(label = n),
+    vjust = -0.3
+  )
+
+
+library(ggvenn)
+library(ggplot2)
+
+SignalPeptides <- list(
+  "UniProt (N = 1579)" = uniprotkb_taxonomy_id_10239_AND_ft_sign_2026_05_11$Entry,
+  "Signal Peptide DB (N = 6197)" = table_merged_for_analysis$ProteinId
+)
+
+##Vienn graph for intersection between signalpeptide.de DB and Uniprot
+
+ggvenn(SignalPeptides, 
+       fill_color = c("#0073C2FF", "pink"),
+       set_name_size = 5)
+
+merged_comparaison2 <- merged_comparaison %>%
+  filter( `SP Status`== "confirmed")
+
+table(merged_comparaison2$status)
+
+merged_comparaison2 %>%
+  count(`status`) %>%
+  ggplot(aes(x = `status`, y = n, fill = n)) +
+  geom_col(fill = c("lightskyblue", "pink"), color = "black", width = 0.3) + #color = border of bar
+  labs(
+    x = "Status",
+    y = "Number of proteins (confirmed)"
+  ) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  geom_text(
+    aes(label = n),
+    vjust = -0.3
+  ) 
+
+sum(is.na(merged_comparaison2$App)) # nb of proteins which SignalP didn't recognize
+sum(!is.na(merged_comparaison2$App)) # nb of proteins which SignalP recognized
+
+
+merged_comparaison2 %>% # count nb of proteins which presents in Uniprot and recognized by SignalP
+  filter(status == "in both") %>%
+  count(App)
+
+merged_comparaison2 %>%  # count nb of proteins which presents in Uniprot
+  filter(status == "in both") %>%
+  count(status)
+
+merged_comparaison2 %>%
+  filter(status == "not in Uniprot") %>%
+  count()
+## graph for 215 signal peptides (confirmed in signalpeptide.de) + data from UniProt
+ggplot(aes( x = `Length.x`,  y = `Length.y`), data = merged_comparaison2) + 
+  geom_point(colour = "black",na.rm = TRUE) +
+  theme_classic() +
+  xlab("Length of signal peptide") +
+  ylab("Length of peptide") +
+  scale_x_continuous(n.breaks = 25) +
+  scale_y_continuous(n.breaks = 20)
+
+
+test <- cor.test(merged_comparaison2$Length.x, merged_comparaison2$Length.y)
+test
+
+sum(is.na(merged_comparaison2$Length.y))
+typeof(merged_comparaison2$Length.y)
+
+
+merged_taxID_organism <- merge(
+  organism_taxID,
+  taxonomy_unique_output_clean,
+  by.x = "TaxonID_org",
+  by.y = "TaxID",
+  all.x = TRUE
+)
+
+head(organism_taxID)
+
+head(taxonomy_unique_output_clean)
+
+exists("taxonomy_unique_output_clean")
+
+
+
+library(ggplot2)
+
+
+
+
+
+
+

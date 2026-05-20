@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# To download the verified protein sequences from UniProt
 
 import csv
 import requests

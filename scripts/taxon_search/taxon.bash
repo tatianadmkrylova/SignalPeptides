@@ -1,6 +1,5 @@
-
 #!/bin/bash
-
+# To download a full taxonomy of the organism (or host) via ncbi (taxId)
 while read taxid
 do
   [ -z "$taxid" ] && continue
@@ -22,6 +21,6 @@ do
       -sep "_" \
       -element Rank,ScientificName
 
-  sleep 0.5
+  sleep 3
 
 done < "$1"
