@@ -59,6 +59,42 @@ uniprot_ids_viruses <- fasta_full_peptides_viruses[grepl("^>", fasta_full_peptid
 uniprot_ids_viruses <- sub("^>", "", uniprot_ids_viruses)
 length(uniprot_ids_viruses) ### intersection between signalpeptide.de proteins and UniProt (actual information)
 
+str(uniprot_viruses_sppr$SPuniprot)
+summary(uniprot_viruses_sppr$SPuniprot)
+
+
+names(uniprot_viruses_sppr)
+
+par(mar = c(2, 2, 2, 1))
+boxplot(uniprot_viruses_sppr[["SPuniprot"]],
+        ylab = "Signal peptide length")
+
+
+##### To calculate ECO in UniProt data viruses #################################
+str(uniprot_viruses_sppr$Signal.peptide)
+library(tidyverse)
+
+tibble(raw = uniprot_viruses_sppr$Signal.peptide) %>%
+  mutate(ECO = str_extract_all(raw, "ECO:\\d+")) %>%
+  mutate(ECO = map(ECO, ~ if (length(.x) == 0) NA_character_ else .x)) %>%
+  unnest(ECO) %>%
+  count(ECO, sort = TRUE)
+
+
+library(stringr)
+
+uniprot_viruses_sppr %>%
+  mutate(ECO = str_extract_all(`Signal.peptide`, "ECO:\\d+")) %>%
+  mutate(ECO = map(ECO, ~ if (length(.x) == 0) NA_character_ else .x)) %>%
+  unnest(ECO) %>%
+  distinct(`Accession.Number`, ECO) %>%
+  count(ECO, sort = TRUE)
+
+
+################################################################################
+
+
+
 ## Merge output from signalpeptide.de and output from SignalP 6.0
 spP6_spSite_merged <- merge(signalP6_table_viruses_an, signalpeptide_viruses, by.x = "ProteinId",
                      by.y = "Accession.Number", all = TRUE)
@@ -135,8 +171,22 @@ ggsave(
   dpi = 300
 )
 
+library(ggvenn)
+SignalPeptides_viruses_db_sp_venn <- list(
+  "Signal Peptide DB " = signalpeptide_viruses_ids_clean,
+  "UniProt " = uniprot_viruses_sppr$Accession.Number)
+len_db_sp_venn_vir_db_sp2 <- ggvenn(SignalPeptides_viruses_db_sp_venn, 
+                                 fill_color = c("#0073C2FF", "pink"),
+                                 set_name_size = 5,text_size = 5,show_percentage = FALSE)
 
-
+len_db_sp_venn_vir_db_sp2
+ggsave(
+  filename = "../../../Images/len_db_sp_venn_vir_db_sp2.png",
+  plot = len_db_sp_venn_vir_db_sp2,
+  width = 6.63,
+  height = 4.46,
+  dpi = 300
+)
 
 ## Merge between table from UniProt and spP6_spSite_merged 
 spP6_spSite_merged_uniprot_vir <- merge(spP6_spSite_merged, uniprot_viruses_signal_confirmed, by.x = "ProteinId",
@@ -445,7 +495,69 @@ ggplot(merged_sp_mammalia, aes ( x = merged_sp_mammalia$Pos_end, y = merged_sp_m
 ## Table downloaded from UniProt with confirmed presence of signal peptide (mammalia) - bash command via query Uniprot / only with evidence ECO:0000269 !!!!!
 uniprot_mammalia_signal_confirmed_exp <- read_tsv(
   "mammalia/uniprot_mammalia_signal_confirmed_exp.tsv",
-  show_col_types = FALSE) 
+  show_col_types = FALSE)
+
+
+uniprot_mammalia_signal_confirmed_exp$SPuniprot<- sub(".*\\.\\.(\\d+);.*", "\\1", uniprot_mammalia_signal_confirmed_exp$`Signal peptide`) ## extraction of end position from UniProt
+uniprot_mammalia_signal_confirmed_exp$SPuniprot <- as.numeric(uniprot_mammalia_signal_confirmed_exp$SPuniprot)
+
+signalpeptide_mammalia_ids_clean <- signalpeptide_mammalia_confirmed$Accession.Number[
+  !is.na(signalpeptide_mammalia_confirmed$Accession.Number) &
+    !grepl("<<", signalpeptide_mammalia_confirmed$Accession.Number)
+]
+
+SignalPeptides_mammalia_db_sp_all <- list(
+  "Signal Peptide DB " = signalpeptide_mammalia_ids_clean,
+  "UniProt " = uniprot_mammalia_signal_confirmed_exp$Entry) ### presence of siignal peptide confirmed
+len_db_sp_venn_mamm_uniprot <- ggvenn(SignalPeptides_mammalia_db_sp_all, 
+                                 fill_color = c("#0073C2FF", "pink", "white"),
+                                 set_name_size = 5,text_size = 5,show_percentage = FALSE)
+
+len_db_sp_venn_mamm_uniprot
+
+ggsave(
+  filename = "../../../Images/len_db_sp_venn_mamm_uniprot.png",
+  plot = len_db_sp_venn_mamm_uniprot,
+  width = 7.55,
+  height = 6.79,
+  dpi = 300
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### To calculate ECO in UniProt data mammalia #################################
+str(uniprot_viruses_sppr$Signal.peptide)
+library(tidyverse)
+
+tibble(raw = uniprot_mammalia_signal_confirmed_exp$`Signal peptide`) %>%
+  mutate(ECO = str_extract_all(raw, "ECO:\\d+")) %>%
+  mutate(ECO = map(ECO, ~ if (length(.x) == 0) NA_character_ else .x)) %>%
+  unnest(ECO) %>%
+  count(ECO, sort = TRUE)
+
+
+library(stringr)
+
+uniprot_mammalia_signal_confirmed_exp %>%
+  mutate(ECO = str_extract_all(`Signal peptide`, "ECO:\\d+")) %>%
+  mutate(ECO = map(ECO, ~ if (length(.x) == 0) NA_character_ else .x)) %>%
+  unnest(ECO) %>%
+  distinct(Entry, ECO) %>%
+  count(ECO, sort = TRUE)
+
+################################################################################
 
 
 uniprot_mammalia_signal_confirmed_exp$SPuniprot<- sub(".*\\.\\.(\\d+);.*", "\\1", uniprot_mammalia_signal_confirmed_exp$`Signal peptide`) 
@@ -796,6 +908,52 @@ uniprot_bacteria_signal_confirmed_exp <- read_tsv(
   "bacteria/uniprotkb_taxonomy_id_2_AND_ft_sign_exp_2026_05_11.tsv",
   show_col_types = FALSE)
 
+
+
+uniprot_bacteria_signal_confirmed_exp$SPuniprot<- sub(".*\\.\\.(\\d+);.*", "\\1", uniprot_bacteria_signal_confirmed_exp$`Signal peptide`) ## extraction of end position from UniProt
+uniprot_bacteria_signal_confirmed_exp$SPuniprot <- as.numeric(uniprot_bacteria_signal_confirmed_exp$SPuniprot)
+
+
+signalpeptide_bacteria_ids_clean <- signalpeptide_bacteria_confirmed$Accession.Number[
+  !is.na(signalpeptide_bacteria_confirmed$Accession.Number) &
+    !grepl("<<", signalpeptide_bacteria_confirmed$Accession.Number)
+]
+
+SignalPeptides_bacteria_db_sp_all <- list(
+  "Signal Peptide DB " = signalpeptide_bacteria_ids_clean,
+  "UniProt " = uniprot_bacteria_signal_confirmed_exp$Entry) ### presence of siignal peptide confirmed
+len_db_sp_venn_bact_uniprot2 <- ggvenn(SignalPeptides_bacteria_db_sp_all, 
+                                      fill_color = c("#0073C2FF", "pink"),
+                                      set_name_size = 5,text_size = 5,show_percentage = FALSE)
+
+len_db_sp_venn_bact_uniprot2
+
+ggsave(
+  filename = "../../../Images/len_db_sp_venn_bact_uniprot2.png",
+  plot = len_db_sp_venn_bact_uniprot2,
+  width = 7.55,
+  height = 6.79,
+  dpi = 300
+)
+
+
+
+
+
+
+
+
+##### To calculate ECO in UniProt data bacteria ################################
+uniprot_bacteria_signal_confirmed_exp %>%
+  mutate(ECO = str_extract_all(`Signal peptide`, "ECO:\\d+")) %>%
+  mutate(ECO = map(ECO, ~ if (length(.x) == 0) NA_character_ else .x)) %>%
+  unnest(ECO) %>%
+  distinct(Entry, ECO) %>%
+  count(ECO, sort = TRUE)
+################################################################################
+
+
+
 uniprot_bacteria_signal_confirmed_exp$SPuniprot<- sub(".*\\.\\.(\\d+);.*", "\\1", uniprot_bacteria_signal_confirmed_exp$`Signal peptide`) 
 uniprot_bacteria_signal_confirmed_exp$SPuniprot <- as.numeric(uniprot_bacteria_signal_confirmed_exp$SPuniprot)
 mean(uniprot_bacteria_signal_confirmed_exp$SPuniprot, na.rm = TRUE)
@@ -1056,4 +1214,67 @@ hist(
 )
 
 dev.off()
+
+################# BOXPLOTS UNIPROT #############################################
+
+library(tidyverse)
+
+df_box <- bind_rows(
+  uniprot_viruses_sppr  %>% transmute(Group = "Viruses",  SPuniprot = SPuniprot),
+  uniprot_mammalia_signal_confirmed_exp %>% transmute(Group = "Mammalia", SPuniprot = SPuniprot),
+  uniprot_bacteria_signal_confirmed_exp %>% transmute(Group = "Bacteria", SPuniprot = SPuniprot)
+)
+
+ggplot(df_box, aes(x = Group, y = SPuniprot, fill = Group)) +
+  geom_boxplot() +
+  labs(
+    title = "Signal peptide length by group (UniProt Database)",
+    x = "",
+    y = "Signal peptide length"
+  ) +
+  theme_classic() +
+  scale_y_continuous(breaks = seq(0, 150, by = 10)) +
+  coord_flip() +
+  theme(legend.position = "none")
+  
+
+ggsave(
+  filename = "../../../Images/uniprot_all_group_sp_length.png",
+  plot = last_plot(),
+  width = 6.63,
+  height = 4.66,
+  dpi = 300
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -5,8 +5,8 @@ import csv
 import requests
 import time
 
-input_file = sys.argv[1]
-output_file = sys.argv[2]
+input_file = sys.argv[1] ### Downloaded file from signalpeptide.de
+output_file = sys.argv[2] ### Name and type of the output file
 
 with open(input_file, newline="", encoding="utf-8") as f, open(output_file, "w") as out:
     reader = csv.DictReader(f)
@@ -20,13 +20,13 @@ with open(input_file, newline="", encoding="utf-8") as f, open(output_file, "w")
 
         time.sleep(0.2)
 
-        if r.status_code != 200:
+        if r.status_code != 200: ### Error shows that the request did not successfully execute
             print(f"{acc}: not found")
             continue
 
-        data = r.json()
+        data = r.json() ### Data from JSON (request)
 
-        if "sequence" not in data:
+        if "sequence" not in data: ### Error if there is not a sequenc data for this accession number 
             print(f"{acc}: no sequence in UniProt")
             continue
 
@@ -35,3 +35,10 @@ with open(input_file, newline="", encoding="utf-8") as f, open(output_file, "w")
         out.write(f">{acc}\n{seq}\n")
 
 print(f"Saved to {output_file}")
+
+
+
+
+
+
+
