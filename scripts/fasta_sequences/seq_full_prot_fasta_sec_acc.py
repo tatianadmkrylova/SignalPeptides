@@ -28,14 +28,14 @@ with open(input_file, newline="", encoding="utf-8") as f, open(output_file, "w")
         # If accession was merged/demerged, get the new accession
         if "sequence" not in data and "inactiveReason" in data:
             if "mergeDemergeTo" in data["inactiveReason"]:
-                new_acc = data["inactiveReason"]["mergeDemergeTo"][0]
+                new_acc = data["inactiveReason"]["mergeDemergeTo"][0] #### take the FIRST secondary accession number
 
                 url = f"https://rest.uniprot.org/uniprotkb/{new_acc}.json"
                 r = requests.get(url)
 
                 time.sleep(0.2)
 
-                if r.status_code != 200:
+                if r.status_code != 200: #### if secondary accession exists but there is not a full protein sequence
                     print(f"{acc}: redirected to {new_acc}, but not found")
                     continue
 

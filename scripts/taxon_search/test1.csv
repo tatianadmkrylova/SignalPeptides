@@ -1,0 +1,10 @@
+ProteinId,Organism_class,Pos_sp_start_uniprot,Pos_sp_end_uniprot,Organism,TaxonID_org,Organism_host,TaxonID_org_host,Evidence_signal_peptide
+P68331,Viruses,1,30,Human herpesvirus 1 (strain 17),10299,Homo sapiens,9606,
+P25129,Viruses,1,31,Pseudomonas phage Pf1,2011081,Pseudomonas aeruginosa,287,ECO:0000255
+P68636,Viruses,1,19,Camelpox virus (strain M-96),203173,Camelus,9836,ECO:0000255
+P68981,Viruses,1,19,Human adenovirus B serotype 35,10522,Homo sapiens,9606,ECO:0000255
+P51519,Viruses,1,33,Bovine leukemia virus,11901,Bos taurus,9913,ECO:0000255
+P99999,Eukaryota,,,Homo sapiens,9606,,,
+P15776,Viruses,1,18,Bovine coronavirus (strain Mebus),11132,Bos taurus,9913,ECO:0000269
+P15776,Viruses,1,16,Bovine coronavirus (strain Mebus),11132,Bos taurus,9913,ECO:0000255
+A4U6V2,Viruses,1,17,Influenza A virus (strain A/USA:Huston/AA/1945 H1N1),425551,"Aves, Homo sapiens, Sus scrofa","8782, 9606, 9823",ECO:0000255

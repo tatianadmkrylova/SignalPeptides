@@ -51,6 +51,128 @@ mean_by_group <- signalpeptide_viruses %>%
     Length = mean(Length, na.rm = TRUE)
   )
 
+# Table from UniProt (validation of the presence of signal peptide)
+sp_viruses_verified_uniprot <- read_delim("~/Documents/STAGE_LIRMM/Travail/data/Data_UniProt/uniprotkb_taxonomy_viruses_AND_ft_sign.tsv", 
+                                          delim = "\t", escape_double = FALSE, 
+                                          trim_ws = TRUE)
+
+sp_viruses_verified_uniprot$SPuniprot<- sub(".*\\.\\.(\\d+).*",
+                                                 "\\1", sp_viruses_verified_uniprot$`Signal peptide`) ## extraction of end position from UniProt
+sp_viruses_verified_uniprot$SPuniprot <- as.numeric(sp_viruses_verified_uniprot$SPuniprot)
+
+uniprot_signalpeptidede_viruses_merge  <- merge(sp_viruses_verified_uniprot, signalpeptide_viruses, by.x  = "Accession Number", by.y  = "Accession.Number")
+
+
+
+
+#### Graph correlation analysis : UniProt vs signalpeptide.de
+########## Сделать ##############################################
+ggplot(
+  uniprot_signalpeptidede_viruses_merge,
+  aes(x = SPuniprot, y = Length.y)
+) +
+  geom_point() +
+  theme_classic() +
+  xlab("Length in UniProt") +
+  ylab("Length in signalpeptide.de") +
+  geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  stat_cor(
+    method = "pearson",
+    label.x = 5,
+    label.y = 68
+  ) +
+  scale_y_continuous(
+    limits = c(0, 70),
+    breaks = seq(0, 70, by = 5)
+  ) +
+  scale_x_continuous(
+    limits = c(0, 70),
+    breaks = seq(0, 70, by = 5)
+  )
+
+
+
+
+
+
+#### Plot signalP length vs signalpeptide.de 
+signal_peptide_lengths_viruses_peptidede_signalp_merge  <- merge(signalP6_table_viruses_an, signalpeptide_viruses, by.x = "ProteinId", by.y = "Accession.Number")
+
+
+signal_peptide_lengths_viruses_peptidede_signalp_merge_plot <- ggplot(
+  signal_peptide_lengths_viruses_peptidede_signalp_merge,
+  aes(x = Pos_end, y = Length)
+) +
+  geom_point() +
+  theme_classic() +
+  xlab("Length in SignalP") +
+  ylab("Length in signalpeptide.de") +
+  geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  stat_cor(
+    method = "pearson",
+    label.x = 5,
+    label.y = 68
+  ) +
+  scale_y_continuous(
+    limits = c(0, 70),
+    breaks = seq(0, 70, by = 5)
+  ) +
+  scale_x_continuous(
+    limits = c(0, 70),
+    breaks = seq(0, 70, by = 5)
+  )
+
+signal_peptide_lengths_viruses_peptidede_signalp_merge_plot
+
+ggsave(
+  filename = "../../../Images/signal_peptide_lengths_viruses_peptidede_signalp_merge_plot.png",
+  plot = signal_peptide_lengths_viruses_peptidede_signalp_merge_plot,
+  width = 6.63,
+  height = 4.66,
+  dpi = 300
+)
+
+
+#### Plot signalP length vs UniProt
+uniprot_lengths_viruses_peptidede_signalp_merge  <- merge(signalP6_table_viruses_an, uniprot_viruses_signal_confirmed, by.x = "ProteinId", by.y = "Entry")
+
+
+uniprot_lengths_viruses_peptidede_signalp_merge_plot <- ggplot(
+  uniprot_lengths_viruses_peptidede_signalp_merge,
+  aes(x = Pos_end, y = SPuniprot)
+) +
+  geom_point() +
+  theme_classic() +
+  xlab("Length in SignalP") +
+  ylab("Length in UniProt") +
+  geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  stat_cor(
+    method = "pearson",
+    label.x = 5,
+    label.y = 68
+  ) +
+  scale_y_continuous(
+    limits = c(0, 70),
+    breaks = seq(0, 70, by = 5)
+  ) +
+  scale_x_continuous(
+    limits = c(0, 70),
+    breaks = seq(0, 70, by = 5)
+  )
+
+uniprot_lengths_viruses_peptidede_signalp_merge_plot
+
+ggsave(
+  filename = "../../../Images/uniprot_lengths_viruses_peptidede_signalp_merge_plot.png",
+  plot = uniprot_lengths_viruses_peptidede_signalp_merge_plot,
+  width = 6.63,
+  height = 4.66,
+  dpi = 300
+)
+
 
 
 # List of all ProteinId which present in Uniprot
@@ -189,12 +311,9 @@ ggsave(
 )
 
 ## Merge between table from UniProt and spP6_spSite_merged 
-spP6_spSite_merged_uniprot_vir <- merge(spP6_spSite_merged, uniprot_viruses_signal_confirmed, by.x = "ProteinId",
+spP6_spSite_merged_uniprot_vir <- merge(signal_peptide_lengths_viruses_peptidede_signalp_merge, uniprot_viruses_signal_confirmed, by.x = "ProteinId",
                             by.y = "Entry", all = TRUE)
 spP6_spSite_merged_uniprot_vir
-
-spP6_spSite_merged_uniprot_vir$SPuniprot<- sub(".*\\.\\.(\\d+);.*", "\\1", spP6_spSite_merged_uniprot_vir$`Signal.peptide`) ## extraction of end position from UniProt
-spP6_spSite_merged_uniprot_vir$SPuniprot <- as.numeric(spP6_spSite_merged_uniprot_vir$SPuniprot)
 
 
 length(spP6_spSite_merged_uniprot_vir$Pos_end) ### 6698
@@ -209,18 +328,17 @@ length(spP6_spSite_merged_uniprot_vir$ProteinId) ### 6698
 
 
 
-#### Graph Length in SignalP vs Length in UniProt
+#### Graph Length in signalpeptide.de vs Length in UniProt
 
 
 signal_peptide_lengths_viruses_all <- ggplot(
   spP6_spSite_merged_uniprot_vir,
-  aes(x = Pos_end, y = SPuniprot)
+  aes(x = Length.x, y = SPuniprot)
 ) +
   geom_point() +
   theme_classic() +
-  xlab("Length in SignalP") +
+  xlab("Length in signalpeptide.de") +
   ylab("Length in UniProt") +
-  labs(title = "Signal peptide lengths in Viruses") +
   geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
   stat_cor(
@@ -468,11 +586,11 @@ merged_sp_mammalia <- merge(signalP6_table_mammalia_an, signalpeptide_mammalia_c
 merged_sp_mammalia$Length <- as.numeric(merged_sp_mammalia$Length)
 
 ## Graph Signal peptide lengths in Mammalia (signalpeptide.de vs SignalP6)
-ggplot(merged_sp_mammalia, aes ( x = merged_sp_mammalia$Pos_end, y = merged_sp_mammalia$Length)) +
+signalpeptidede_signalp_mammalia_plot <- ggplot(merged_sp_mammalia, aes ( x = merged_sp_mammalia$Pos_end, y = merged_sp_mammalia$Length)) +
   geom_point() +
   theme_classic() +
   xlab("Length in SignalP6") +
-  ylab("Length in DB") +
+  ylab("Length in signalpeptide.de") +
   labs(title = "Signal peptide lengths in Mammalia") +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
   geom_smooth(method = "lm", se = TRUE, na.rm = TRUE) +
@@ -489,6 +607,18 @@ ggplot(merged_sp_mammalia, aes ( x = merged_sp_mammalia$Pos_end, y = merged_sp_m
     limits = c(0, 70),
     breaks = seq(0, 70, by = 5)
   )
+
+signalpeptidede_signalp_mammalia_plot
+
+ggsave(
+  filename = "../../../Images/signalpeptidede_signalp_mammalia_plot.png",
+  plot = signalpeptidede_signalp_mammalia_plot,
+  width = 6.63,
+  height = 4.66,
+  dpi = 300
+)
+
+
 
 
 
@@ -650,7 +780,6 @@ signal_peptide_lengths_mammalia <- ggplot(merged_sp_mammalia_uniprot, aes ( x = 
   theme_classic() +
   xlab("Length in SignalP") +
   ylab("Length in UniProt") +
-  labs(title = "Signal peptide lengths in Mammalia (n=1242, confirmed exp)") +
   geom_smooth(method = 'lm',
               se = TRUE, na.rm = TRUE) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") + 
@@ -1249,6 +1378,13 @@ ggsave(
 
 
 
+####%%%%%%%%%%%%%%%%##############%%%%%%%%%%%%%%%##############%%%%%%%%$$$######
+
+
+merged_signalpeptide_uniprot <- merge(signalpeptide_viruses, uniprot_viruses_signal_confirmed, by.x = "Accession.Number", by.y = "Entry", all = TRUE) # intersection 
+
+na_uniprot_dans_signalpeptidede <- merged_signalpeptide_uniprot %>%
+  filter(is.na(Signal.peptide))
 
 
 
