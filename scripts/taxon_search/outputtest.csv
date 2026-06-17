@@ -1,0 +1,3 @@
+ProteinId,Length_protein_UniProt,PrimaryAccession,SecondaryAccessions,Organism_class,Organism,TaxonID_org,Organism_host,TaxonID_org_host,Pos_sp_start_uniprot_1,Pos_sp_end_uniprot_1,Evidence_signal_peptide_1,Pos_sp_start_uniprot_2,Pos_sp_end_uniprot_2,Evidence_signal_peptide_2,Pos_tr_start_uniprot_1,Pos_tr_end_uniprot_1,Evidence_code_tr_1
+P0C788,271,P0C788,"P0C789, P88963, Q98149",Viruses,Human herpesvirus 8 type P (isolate GK18),868565,Homo sapiens,9606,1,24,ECO:0000255,,,,228,248,ECO:0000255
+P15776,424,P15776,,Viruses,Bovine coronavirus (strain Mebus),11132,Bos taurus,9913,1,18,ECO:0000269,1,16,ECO:0000255,393,413,ECO:0000255
