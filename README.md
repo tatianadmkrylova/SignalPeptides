@@ -41,3 +41,7 @@ Rin script taxon_search/**host_taxonID.py**  with a file containing ProteinID li
  #To download the verified protein sequences from UniProt
  
  Run **all_virSP_confirmed_uniprot.py**
+
+ #To download metadata from UniProt
+ 
+  Run **uniprot_request_metadata.py**
