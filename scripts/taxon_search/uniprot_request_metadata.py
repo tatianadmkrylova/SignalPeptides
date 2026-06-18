@@ -286,7 +286,7 @@ with open(input_file, newline="", encoding="utf-8") as f, \
                 signal["evidence"]
             ])
 
-        missing_signals = max_signal_count - len(signals)
+        missing_signals = max_signal_count - len(signals) ### Add the empty values to the existing columns
 
         for _ in range(missing_signals):
             row_out.extend(["", "", ""])
@@ -300,7 +300,7 @@ with open(input_file, newline="", encoding="utf-8") as f, \
                 tran["evidence"]
             ])
 
-        missing_trans = max_trans_count - len(trans)
+        missing_trans = max_trans_count - len(trans)  ### Add the empty values to the existing columns
 
         for _ in range(missing_trans):
             row_out.extend(["", "", ""])
