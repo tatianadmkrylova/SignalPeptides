@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Script to collect metadata from UniProt accession number (like an input file)
+
 import sys
 import csv
 import time
