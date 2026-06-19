@@ -10,11 +10,11 @@ name_class = sys.argv[2] ### for example, viruses, mammalia, bacteria
 dfs = [] ### list of datasets for each page (50 proteins par page by default)
 
 for start in range(0, 100000, 25):
-    url = f"http://www.signalpeptide.de/index.php?sess=&m=listspdb_{m}&start={start}&orderby=id&sortdir=asc"
+    url = f"http://www.signalpeptide.de/index.php?sess=&m=listspdb_{name_class}&start={start}&orderby=id&sortdir=asc"
     print("reading", url)
 
     tables = pd.read_html(url)
-    df = max(tables, key=len)
+    df = max(tables, key=len) ### find the most long table (key = len, length of the table)
 
     print("rows:", len(df))
 
