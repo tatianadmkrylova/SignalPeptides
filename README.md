@@ -25,27 +25,3 @@ signalp6 --fastafile /path/to/input.fasta --organism other --output_dir path/to/
 
 __________________________________________________________________________________________________________________________________________________
 
-
-
-Run script taxon_search/**organism_taxonID.py**, an input file needs to contain the protein accession number
-
-# To find a class name of organism (or host organism) via id of taxon
-
-Rin script taxon_search/***taxon_class.sh**  with a file containing taxID like an input
-
-# To download the sequences of confirmed signal peptides in tsv format, run the folowing command (taxonomy_id:40674 - for mammalia) :
-
-# To download the taxonID of hosts
-
-Rin script taxon_search/**host_taxonID.py**  with a file containing ProteinID like an input 
-
-# To download host name via proteinId
- Run script  taxon_search/**host_vir_sigprot.py**
- 
- #To download the verified protein sequences from UniProt
- 
- Run **all_virSP_confirmed_uniprot.py**
-
- #To download metadata from UniProt
- 
-  Run **uniprot_request_metadata.py**
