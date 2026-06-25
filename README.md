@@ -3,9 +3,12 @@
 ## Creation of datasets for SignalP 6.0 analysis
 
 1. To downloaded annotated proteins with signal peptide from UniProt (Primary accession number), run the script **Datasets/UniProt/uniprot_dataset.sh**
-   To have metadata from UniProt, run the script **Datasets/Uniprot/UniProt_request_metadata.py**
-   To downloaded proteins (Accession numbers) with signal peptide from the site signalpeptide.de, run the script **Datasets/signalpeptide/signalpeptide.py**
-   To have metadata from Uniprot for the site signalpeptide dataset, run the script **Datasets/signalpeptide/uniprot_request_metadata_signalpeptide.py**
+
+To have metadata from UniProt, run the script **Datasets/Uniprot/UniProt_request_metadata.py**
+
+To downloaded proteins (Accession numbers) with signal peptide from the site signalpeptide.de, run the script **Datasets/signalpeptide/signalpeptide.py**
+
+To have metadata from Uniprot for the site signalpeptide dataset, run the script **Datasets/signalpeptide/uniprot_request_metadata_signalpeptide.py**
 
 2. To create images and make a statistical analysis, run the script **Datasets/Analysis/Datasets.R**
 

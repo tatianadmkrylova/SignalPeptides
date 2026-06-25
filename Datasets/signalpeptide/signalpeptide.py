@@ -25,7 +25,7 @@ for start in range(0, 100000, 25):
 
 result = pd.concat(dfs, ignore_index=True).drop_duplicates() ### merge dfs, ignore_index=True - enumerate again a dataset after merge, drop_duplicates() - delete the duplicated lines 
 
-result.to_csv(f"output/signalpeptide_{name}.csv", index=False) ### index = False to do not save an index of pandas like a separate column 
+result.to_csv(f"../Outputs/signalpeptide_{name}.csv", index=False) ### index = False to do not save an index of pandas like a separate column 
 
 print(f"Saved: signalpeptide_{name}.csv")
 print(f"Total rows: {len(result)}")
