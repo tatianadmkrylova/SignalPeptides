@@ -7,7 +7,7 @@
    To downloaded proteins (Accession numbers) with signal peptide from the site signalpeptide.de, run the script **Datasets/signalpeptide/signalpeptide.py**
    To have metadata from Uniprot for the site signalpeptide dataset, run the script **Datasets/signalpeptide/uniprot_request_metadata_signalpeptide.py**
 
-2. To create images and make a statistical analysis, run the script **Datasets/Analysis/DatasetsR.r**
+2. To create images and make a statistical analysis, run the script **Datasets/Analysis/Datasets.R**
 
 # Creation of fasta files to run SignalP 6.0
 
@@ -21,7 +21,7 @@ signalp6 --fastafile /path/to/input.fasta --organism other --output_dir path/to/
 
 # Results from SignalP analysis
 
-6. To create images and make a statistical analysis from SignalP 6.0 results, run the script **SignalP/Analysis_results_SignalP/SignalPR.r** 
+6. To create images and make a statistical analysis from SignalP 6.0 results, run the script **SignalP/Analysis_results_SignalP/SignalP.R** 
 
 __________________________________________________________________________________________________________________________________________________
 
