@@ -20,7 +20,7 @@ To have metadata from Uniprot for the site signalpeptide dataset, run the script
 
 5. Run "SignalP 6.0" using fasta files like an input (recommended to use an environement like conda)
 
-signalp6 --fastafile /path/to/input.fasta --organism other --output_dir path/to/be/saved --format txt --mode slow-sequencial
+signalp6 --fastafile /path/to/input.fasta --organism other --output_dir path/to/be/saved --format txt --mode slow-sequential
 
 ## Results from SignalP analysis
 
