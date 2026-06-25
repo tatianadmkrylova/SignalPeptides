@@ -1,6 +1,6 @@
 # SignalPeptides
 
-# Creation of datasets for SignalP 6.0 analysis
+## Creation of datasets for SignalP 6.0 analysis
 
 1. To downloaded annotated proteins with signal peptide from UniProt (Primary accession number), run the script **Datasets/UniProt/uniprot_dataset.sh**
    To have metadata from UniProt, run the script **Datasets/Uniprot/UniProt_request_metadata.py**
@@ -9,7 +9,7 @@
 
 2. To create images and make a statistical analysis, run the script **Datasets/Analysis/Datasets.R**
 
-# Creation of fasta files to run SignalP 6.0
+## Creation of fasta files to run SignalP 6.0
 
 3. To download a full protein sequence in fasta format for each PrimaryAccession number from files .csv with UniProt metadata, run the script **SignalP/seq_full_prot_fasta_sec_acc.py**
 
@@ -19,7 +19,7 @@
 
 signalp6 --fastafile /path/to/input.fasta --organism other --output_dir path/to/be/saved --format txt --mode slow-sequencial
 
-# Results from SignalP analysis
+## Results from SignalP analysis
 
 6. To create images and make a statistical analysis from SignalP 6.0 results, run the script **SignalP/Analysis_results_SignalP/SignalP.R** 
 
