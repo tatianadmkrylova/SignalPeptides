@@ -1,0 +1,10 @@
+.DS_Store
+
+data/interim/fasta/*
+
+!data/interim/fasta/.gitkeep
+
+__pycache__/
+*.pyc
+
+Rplots.pdf
